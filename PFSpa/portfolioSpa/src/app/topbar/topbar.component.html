@@ -1,0 +1,18 @@
+<!-- Il wrapper principale della topbar -->
+<nav class="topbar">
+  <!-- Sezione sinistra con titolo -->
+  <div class="left">
+    <h2>{{ 'APP.TITLE' | translate }}</h2>
+  </div>
+
+  <!-- Sezione destra con scelta lingua -->
+  <div class="right">
+    <span class="lang-label">{{ 'APP.LANGUAGE' | translate }}:</span>
+    <button (click)="switchLang('it')">
+      <img src="assets/flags/it.png" alt="Italiano" width="24" />
+    </button>
+    <button (click)="switchLang('en')">
+      <img src="assets/flags/en.png" alt="English" width="24" />
+    </button>
+  </div>
+</nav>

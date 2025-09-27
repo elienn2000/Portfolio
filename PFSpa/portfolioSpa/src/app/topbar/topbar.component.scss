@@ -1,0 +1,79 @@
+/* ================================
+   1. Dichiaro che la topbar è un container
+   - "container-type: inline-size" → la query risponde alla LARGHEZZA
+   - "container-name: topbar" → do un nome così posso richiamarlo
+   ================================= */
+.topbar {
+  container-type: inline-size;
+  container-name: topbar;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface-card, #fff);
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .left h2 {
+    margin: 0;
+    font-size: clamp(1rem, 2vw, 1.5rem); /* font fluido */
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .lang-label {
+      font-size: 0.9rem;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      img {
+        border-radius: 50%;
+        display: block;
+      }
+    }
+  }
+}
+
+/* ================================
+   2. Container Query
+   - Quando la topbar è larga meno di 500px,
+     cambio layout SOLO dentro la topbar,
+     indipendentemente dalla viewport.
+   ================================= */
+@container topbar (max-width: 500px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem;
+
+    .left h2 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .right {
+      width: 100%;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      .lang-label {
+        display: none; // nascondo la scritta "Lingua" per risparmiare spazio
+      }
+    }
+  }
+}

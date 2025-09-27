@@ -364,3 +364,10 @@ FodyWeavers.xsd
 /PFSpa/portfolioSpa/.editorconfig
 /PFSpa/portfolioSpa/package-lock.json
 /PFSpa/portfolioSpa/.angular/cache/20.3.3/portfolioSpa
+/PFSpa/portfolioSpa/dist/portfolioSpa/browser/main-HGVXZHFG.js
+/PFSpa/portfolioSpa/dist/portfolioSpa/browser/polyfills-5CFQRCPP.js
+/PFSpa/portfolioSpa/dist/portfolioSpa/browser/styles-DTTV3AOM.css
+/PFSpa/portfolioSpa/dist/portfolioSpa/server
+*.txt
+*.json
+/PFSpa/portfolioSpa/dist/portfolioSpa/browser
