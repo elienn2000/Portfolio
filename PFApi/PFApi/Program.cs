@@ -26,6 +26,13 @@ namespace PortfolioApi
             Log.Logger = logger;
             logger.Information("Starting up");
 
+            // Carica le impostazioni JWTUser da appsettings.json
+            var jwtUserSettings = config.GetSection("JWTUser").Get<JwtUserSettings>();
+            if (jwtUserSettings == null)
+            {
+                throw new InvalidOperationException("Impossibile caricare la configurazione JWTUser da appsettings.json.");
+            }
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Logging.ClearProviders();
@@ -33,6 +40,9 @@ namespace PortfolioApi
 
             builder.Services.ConfigureRepositoryWrapper();
 
+
+
+            // Autenticazione JWTUser
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "JWTUser";
@@ -46,15 +56,19 @@ namespace PortfolioApi
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["JWTUser:Issuer"],
-                    ValidAudience = config["JWTUser:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTUser:Secret"])),
+                    ValidIssuer = jwtUserSettings.Issuer,
+                    ValidAudience = jwtUserSettings.Issuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtUserSettings.Secret)),
                 };
             });
 
+            // Autorizzazione
             builder.Services.AddAuthorization();
 
+            // Aggiunta di OpenAPI/Swagger per documentazione API
             builder.Services.AddOpenApi();
+
+            // Configurazione di Swagger con supporto per l'autenticazione JWT
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -83,6 +97,7 @@ namespace PortfolioApi
                 });
             });
 
+            // Configurazione CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("Open", policy =>
@@ -94,9 +109,13 @@ namespace PortfolioApi
                 });
             });
 
+            // Aggiunta dei controller
             builder.Services.AddControllers();
+
+            // Aggiunta di SignalR
             builder.Services.AddSignalR();
 
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -107,10 +126,12 @@ namespace PortfolioApi
 
             app.UseHttpsRedirection();
             app.UseCors("Open");
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+
             // app.MapHub<HubSignalR>("/notificheHub");
 
             app.Run();
