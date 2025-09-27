@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/PFSpa/portfolioSpa/.editorconfig
+/PFSpa/portfolioSpa/package-lock.json
+/PFSpa/portfolioSpa/.angular/cache/20.3.3/portfolioSpa
