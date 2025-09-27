@@ -1,0 +1,6 @@
+@PFApi_HostAddress = http://localhost:5070
+
+GET {{PFApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

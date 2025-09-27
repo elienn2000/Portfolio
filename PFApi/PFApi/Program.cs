@@ -1,0 +1,119 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Extensions.Logging;
+using Serilog.Settings.Configuration; // AGGIUNTO: necessario per ReadFrom.Configuration
+using System.Text;
+using PortfolioApi.Helper;
+
+namespace PortfolioApi
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config) // ora funziona grazie al using aggiunto sopra
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            Log.Logger = logger;
+            logger.Information("Starting up");
+
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
+
+            builder.Services.ConfigureRepositoryWrapper();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JWTUser";
+                options.DefaultChallengeScheme = "JWTUser";
+            })
+            .AddJwtBearer("JWTUser", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = config["JWTUser:Issuer"],
+                    ValidAudience = config["JWTUser:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTUser:Secret"])),
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddOpenApi();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.AddSecurityDefinition("JWTUser", new OpenApiSecurityScheme
+                {
+                    Description = "Token JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "JWTUser"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Open", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
+
+            builder.Services.AddControllers();
+            builder.Services.AddSignalR();
+
+            var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseCors("Open");
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+            // app.MapHub<HubSignalR>("/notificheHub");
+
+            app.Run();
+        }
+    }
+}
