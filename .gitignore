@@ -371,3 +371,4 @@ FodyWeavers.xsd
 *.txt
 *.json
 /PFSpa/portfolioSpa/dist/portfolioSpa/browser
+/PFApi/PFApi/Data
