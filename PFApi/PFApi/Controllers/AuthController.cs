@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PortfolioApi.Models;
+using PortfolioApi.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PortfolioApi.Controllers
@@ -12,38 +14,47 @@ namespace PortfolioApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly UserRepository _userRepository;
 
-        public AuthController(IConfiguration config)
+        public AuthController(IConfiguration config, UserRepository userRepository)
         {
             _config = config;
+            _userRepository = userRepository;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // 1. Validazione fake (per ora hardcoded)
-            if (request.Email != "test@test.com" || request.Password != "1234")
-                return Unauthorized(new { message = "Invalid credentials" });
 
-            // 2. Recupero configurazione JWTUser
+            // Get the user entity using the login request
+            var user = await _userRepository.GetByLoginRequestAsync(request);
+
+            // Check if the user exists
+            if (user == null || !PasswordHelper.VerifyPassword(request.Password, user.PasswordHash))
+            {
+                return Unauthorized(new { message = "Invalid credentials" });
+            }
+
+            // Get JWT settings from configuration
             var jwtSection = _config.GetSection("JWTUser");
             var secret = jwtSection["Secret"];
             var issuer = jwtSection["Issuer"];
             var tokenValidMinutes = int.Parse(jwtSection["TokenValidMinutes"]);
+            var refreshTokenValidMinutes = int.Parse(jwtSection["RefreshTokenValidMinutes"]);
 
-            // 3. Creazione claims
+            // Defining claims
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, request.Email),
-                new Claim("role", "User"), // puoi gestire ruoli
+                new Claim("role", "User"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            // 4. Chiave + credenziali
+            // Keys and credentials
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // 5. Creazione token
+            // Token generation
             var token = new JwtSecurityToken(
                 issuer: issuer,
                 audience: issuer,
@@ -54,12 +65,32 @@ namespace PortfolioApi.Controllers
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            // 6. Ritorno token
+            // Refresh Token generation
+            var randomBytes = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            var refreshToken = Convert.ToBase64String(randomBytes);
+
+            // Save tokens in the database
+            await _userRepository.SaveTokensAsync(
+                user,
+                tokenString,
+                DateTime.UtcNow.AddMinutes(tokenValidMinutes), 
+                refreshToken, 
+                DateTime.UtcNow.AddMinutes(refreshTokenValidMinutes)
+            );
+
+            // Returning user data with tokens
             return Ok(new
             {
+                userId = user.Id,
+                email = user.Email,
+                username = user.Username,
                 token = tokenString,
+                refreshToken = refreshToken,
                 expires = DateTime.UtcNow.AddMinutes(tokenValidMinutes)
             });
         }
+
     }
 }

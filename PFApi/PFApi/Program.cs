@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+using Microsoft.Data.Sqlite;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using PortfolioApi.Helper;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Settings.Configuration; // AGGIUNTO: necessario per ReadFrom.Configuration
+using System.Data;
 using System.Text;
-using PortfolioApi.Helper;
 
 namespace PortfolioApi
 {
@@ -33,14 +35,28 @@ namespace PortfolioApi
                 throw new InvalidOperationException("Impossibile caricare la configurazione JWTUser da appsettings.json.");
             }
 
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(logger);
 
+            var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            if (connString == null)
+            {
+                throw new InvalidOperationException("Impossibile caricare la configurazione JWTUser da appsettings.json.");
+            }
+
+            // Verifica e crea il database SQLite se non esiste
+            DbChecker.EnsureDatabaseExists(connString);
+
+            // Connessione sql lite al file del database
+            builder.Services.AddScoped<IDbConnection>(sp =>
+                new SqliteConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
             builder.Services.ConfigureRepositoryWrapper();
-
-
 
             // Autenticazione JWTUser
             builder.Services.AddAuthentication(options =>
@@ -115,7 +131,7 @@ namespace PortfolioApi
             // Aggiunta di SignalR
             builder.Services.AddSignalR();
 
-            
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
