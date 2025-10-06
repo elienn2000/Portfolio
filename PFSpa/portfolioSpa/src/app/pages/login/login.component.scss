@@ -1,0 +1,36 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    background-color: var(--mat-sys-background);
+    height: 100%;
+    align-items: center;
+
+
+    .login-card {
+
+        height: 80%;
+
+        .login-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--mat-sys-on-surface);
+        }
+
+        .mat-mdc-card-content {
+            align-items: left;
+            width: 80%;
+        }
+
+
+        flex-direction: column;
+        text-align: center;
+        width: 40%;
+        padding: 20px;
+        box-shadow: 0 4px 8px var(--mat-sys-outline);
+        border-radius: 8px;
+        background-color: var(--mat-sys-surface);
+        border: 1px solid var(--mat-sys-outline);
+        align-items: center;
+    }
+}

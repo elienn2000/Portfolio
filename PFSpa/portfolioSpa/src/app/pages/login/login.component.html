@@ -1,8 +1,37 @@
 <div class="login-container">
-  <h2>{{ 'LOGIN.TITLE' | translate }}</h2>
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>
+        <span class="login-title">{{ 'LOGIN.TITLE' | translate }} </span>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
+          <input type="email" id="email" [(ngModel)]="email" name="email" required
+            placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
+        </div>
 
-  <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-    <!-- Campo Email -->
+        <div class="form-group">
+          <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
+          <input type="password" id="password" [(ngModel)]="password" name="password" required
+            placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
+        </div>
+
+        <button type="submit" [disabled]="!loginForm.form.valid">
+          {{ 'LOGIN.BUTTON' | translate }}
+        </button>
+      </form>
+    </mat-card-content>
+    <!-- <mat-card-actions>
+    <button matButton>LIKE</button>
+    <button matButton>SHARE</button>
+  </mat-card-actions> -->
+  </mat-card>
+
+
+  <!-- <form (ngSubmit)="onLogin()" #loginForm="ngForm">
     <div class="form-group">
       <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
       <input
@@ -15,7 +44,6 @@
       />
     </div>
 
-    <!-- Campo Password -->
     <div class="form-group">
       <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
       <input
@@ -28,9 +56,11 @@
       />
     </div>
 
-    <!-- Pulsante Login -->
     <button type="submit" [disabled]="!loginForm.form.valid">
       {{ 'LOGIN.BUTTON' | translate }}
     </button>
-  </form>
+  </form> -->
+
+
+
 </div>

@@ -5,10 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../services/auth.service';
 
+import { MatCardModule } from '@angular/material/card';
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, MatCardModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
