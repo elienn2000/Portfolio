@@ -1,79 +1,76 @@
-/* ================================
-   1. Dichiaro che la topbar è un container
-   - "container-type: inline-size" → la query risponde alla LARGHEZZA
-   - "container-name: topbar" → do un nome così posso richiamarlo
-   ================================= */
-.topbar {
-  container-type: inline-size;
-  container-name: topbar;
+@use '@angular/material' as mat;
 
+mat-toolbar {
+  background-color: var(--mat-sys-primary);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: var(--surface-card, #fff);
-  padding: 0.75rem 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  color: var(--mat-sys-on-primary);
 
-  .left h2 {
-    margin: 0;
-    font-size: clamp(1rem, 2vw, 1.5rem); /* font fluido */
+
+  .left {
+    display: flex;
+    align-items: center;
   }
+
+  .spacer {
+    flex: 1 1 auto; // spinge la sezione destra tutta a destra
+  }
+
+
+  .center {
+    display: flex;
+    align-items: center;
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-outlined-button,
+  .mat-mdc-unelevated-button,
+  .mat-mdc-icon-button {
+    color: var(--mat-sys-on-primary);
+    font-family: var(--mat-sys-body-medium-font);
+    font-size: var(--mat-sys-body-medium-size);
+    margin: 0 10px;
+    font-size: 1.1em;
+  }
+
+
+  button.mat-mdc-button.active-menu {
+  color: var(--mat-sys-tertiary) !important;
+  
+}
 
   .right {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-
-    .lang-label {
-      font-size: 0.9rem;
-    }
-
-    button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-
-      &:hover {
-        transform: scale(1.1);
-      }
-
-      img {
-        border-radius: 50%;
-        display: block;
-      }
-    }
   }
-}
 
-/* ================================
-   2. Container Query
-   - Quando la topbar è larga meno di 500px,
-     cambio layout SOLO dentro la topbar,
-     indipendentemente dalla viewport.
-   ================================= */
-@container topbar (max-width: 500px) {
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.5rem;
 
-    .left h2 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
+  // .language-option {
+  //   display: flex !important;
+  //   flex-direction: row !important;
+  //   align-items: center !important;
+  //   gap: 0.5rem !important;
+  // }
 
-    .right {
-      width: 100%;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-
-      .lang-label {
-        display: none; // nascondo la scritta "Lingua" per risparmiare spazio
-      }
-    }
+  .option-icon {
+    width: 24px !important;
+    height: 24px !important;
+    margin: 8px !important;
   }
+
+  .custom-option {
+    display: flex;
+    align-items: center;
+  }
+
+
+  background-image: repeating-linear-gradient(
+    45deg,
+    #222 0px,
+    #222 5px,
+    #333 5px,
+    #333 10px
+  );
+
 }

@@ -1,18 +1,78 @@
-<!-- Il wrapper principale della topbar -->
-<nav class="topbar">
-  <!-- Sezione sinistra con titolo -->
+<mat-toolbar color="primary" class="p-3">
   <div class="left">
-    <h2>{{ 'APP.TITLE' | translate }}</h2>
+    <h1 style="font-size: 1.1em;">{{ 'APP.TITLE' | translate }}</h1>
   </div>
 
-  <!-- Sezione destra con scelta lingua -->
-  <div class="right">
-    <span class="lang-label">{{ 'APP.LANGUAGE' | translate }}:</span>
-    <button (click)="switchLang('it')">
-      <img src="assets/flags/it.png" alt="Italiano" width="24" />
+  <span class="spacer"></span>
+
+
+  <div class="center">
+    <button mat-button routerLink="/home" [ngClass]="{ 'active-menu': selectedMenu === 'home' }"
+      (click)="selectedMenu = 'home'">
+      {{ 'MENU.HOME' | translate }}
     </button>
-    <button (click)="switchLang('en')">
-      <img src="assets/flags/en.png" alt="English" width="24" />
-    </button>
+
+    <button mat-button routerLink="/about">{{ 'MENU.ABOUT' | translate }}</button>
+    <button mat-button routerLink="/projects">{{ 'MENU.PROJECTS' | translate }}</button>
+    <button mat-button routerLink="/contact">{{ 'MENU.CONTACT' | translate }}</button>
   </div>
-</nav>
+
+  <span class="spacer"></span>
+
+  <div class="right" style="padding: 5px; display: flex;">
+    <!-- <mat-select [(value)]="selLang" (selectionChange)="switchLang($event.value)" appendTo="body" disableOptionCentering>
+
+      <mat-select-trigger>
+        <div *ngIf="selLang === 'it'" class="items-center gap-2">
+          <img src="assets/flags/it.png" alt="Italiano" width="24" height="24" />
+          <span>Italiano</span>
+        </div>
+        <div *ngIf="selLang === 'en'" class="items-center gap-2">
+          <img src="assets/flags/en.png" alt="English" width="24" height="24" />
+          <span>English</span>
+        </div>
+      </mat-select-trigger>
+
+
+      <mat-option value="it">
+        <div class="flex flex-row items-center gap-2">
+          <img src="assets/flags/it.png" alt="Italiano" width="24" height="24" />
+          <span>Italiano</span>
+        </div>
+      </mat-option>
+
+      <mat-option value="en">
+        <img src="assets/flags/en.png" alt="English" width="24" height="24" />
+        <span>English</span>
+      </mat-option>
+    </mat-select> -->
+
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>{{ 'APP.LANGUAGE' | translate }}</mat-label>
+      <mat-select [(value)]="selLang" (selectionChange)="switchLang()">
+
+
+        <mat-option value="it">
+          <span>Italiano</span>
+        </mat-option>
+        <mat-option value="en">
+          <span>English</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+  </div>
+
+
+
+  <!-- <div class="right">
+    <span class="lang-label">{{ 'APP.LANGUAGE' | translate }}:</span>
+     <button mat-icon-button (click)="switchLang('it')">
+      <img src="assets/flags/it.png" alt="Italiano" />
+    </button>
+    <button mat-icon-button (click)="switchLang('en')">
+      <img src="assets/flags/en.png" alt="English" />
+    </button> 
+  </div> -->
+</mat-toolbar>
