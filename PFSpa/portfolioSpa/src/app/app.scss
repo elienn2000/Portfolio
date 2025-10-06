@@ -1,0 +1,23 @@
+@use '../styles.scss' as *;
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  flex: 0 0 auto; /* or use a fixed height like 60px */
+  /* height: 60px; */ /* uncomment for fixed height */
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
