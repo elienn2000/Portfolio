@@ -2,65 +2,92 @@
   <mat-card class="login-card">
     <mat-card-header>
       <mat-card-title>
-        <span class="login-title">{{ 'LOGIN.TITLE' | translate }} </span>
+        <span class="login-title"> WELCOME (TO TR) </span>
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-        <div class="form-group">
-          <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
-          <input type="email" id="email" [(ngModel)]="email" name="email" required
-            placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
-        </div>
-
-        <div class="form-group">
-          <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
-          <input type="password" id="password" [(ngModel)]="password" name="password" required
-            placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
-        </div>
-
-        <button type="submit" [disabled]="!loginForm.form.valid">
-          {{ 'LOGIN.BUTTON' | translate }}
-        </button>
-      </form>
+      
+      <mat-tab-group class="mt-6">
+        <mat-tab label="LOGIN (TO TR)">
+          <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+            <div class="flex flex-col gap-2 items-start">
+              <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
+              <input class="w-full" type="email" id="email" [(ngModel)]="email" name="email" required
+              placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
+            </div>
+            
+            <div class="flex flex-col gap-2">
+              <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
+              <input class="w-full" type="password" id="password" [(ngModel)]="password" name="password" required
+              placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
+            </div>
+            
+            <button type="submit" [disabled]="!loginForm.form.valid">
+              {{ 'LOGIN.BUTTON' | translate }}
+            </button>
+          </form>
+        </mat-tab>
+        <mat-tab label="REGISTER (TO TR)"> 
+          <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+            <div class="form-group">
+              <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
+              <input type="email" id="email" [(ngModel)]="email" name="email" required
+              placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
+            </div>
+            
+            <div class="form-group">
+              <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
+              <input type="password" id="password" [(ngModel)]="password" name="password" required
+              placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
+            </div>
+            
+            <button type="submit" [disabled]="!loginForm.form.valid">
+              {{ 'LOGIN.BUTTON' | translate }}
+            </button>
+          </form>
+          
+          
+          
+        </mat-tab>
+      </mat-tab-group>
     </mat-card-content>
     <!-- <mat-card-actions>
-    <button matButton>LIKE</button>
-    <button matButton>SHARE</button>
-  </mat-card-actions> -->
+      <button matButton>LIKE</button>
+      <button matButton>SHARE</button>
+    </mat-card-actions> -->
   </mat-card>
-
-
+  
+  
   <!-- <form (ngSubmit)="onLogin()" #loginForm="ngForm">
     <div class="form-group">
       <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
       <input
-        type="email"
-        id="email"
-        [(ngModel)]="email"
-        name="email"
-        required
-        placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}"
+      type="email"
+      id="email"
+      [(ngModel)]="email"
+      name="email"
+      required
+      placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}"
       />
     </div>
-
+    
     <div class="form-group">
       <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
       <input
-        type="password"
-        id="password"
-        [(ngModel)]="password"
-        name="password"
-        required
-        placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
+      type="password"
+      id="password"
+      [(ngModel)]="password"
+      name="password"
+      required
+      placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
       />
     </div>
-
+    
     <button type="submit" [disabled]="!loginForm.form.valid">
       {{ 'LOGIN.BUTTON' | translate }}
     </button>
   </form> -->
-
-
-
+  
+  
+  
 </div>

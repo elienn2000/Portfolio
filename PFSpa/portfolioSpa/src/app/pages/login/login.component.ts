@@ -6,11 +6,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 
 import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, MatCardModule],
+  imports: [CommonModule, FormsModule, TranslateModule, MatCardModule, MatTabsModule, MatInputModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
