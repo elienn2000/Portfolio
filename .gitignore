@@ -368,7 +368,5 @@ FodyWeavers.xsd
 /PFSpa/portfolioSpa/dist/portfolioSpa/browser/polyfills-5CFQRCPP.js
 /PFSpa/portfolioSpa/dist/portfolioSpa/browser/styles-DTTV3AOM.css
 /PFSpa/portfolioSpa/dist/portfolioSpa/server
-*.txt
-*.json
 /PFSpa/portfolioSpa/dist/portfolioSpa/browser
 /PFApi/PFApi/Data
