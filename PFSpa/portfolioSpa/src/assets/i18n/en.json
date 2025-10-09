@@ -1,0 +1,21 @@
+{
+  "APP": {
+    "TITLE": "Welcome to my portfolio",
+    "LANGUAGE": "Language",
+    "LOGIN": "Login"
+  },
+  "LOGIN": {
+    "TITLE": "Login to your account",
+    "EMAIL": "Email",
+    "EMAIL_PLACEHOLDER": "Enter your email",
+    "PASSWORD": "Password",
+    "PASSWORD_PLACEHOLDER": "Enter your password",
+    "BUTTON": "Login"
+  },
+  "MENU": {
+    "HOME": "Home",
+    "ABOUT": "About me",
+    "PROJECTS": "Projects",
+    "CONTACT": "Contacts"
+  }
+}

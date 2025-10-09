@@ -370,3 +370,5 @@ FodyWeavers.xsd
 /PFSpa/portfolioSpa/dist/portfolioSpa/server
 /PFSpa/portfolioSpa/dist/portfolioSpa/browser
 /PFApi/PFApi/Data
+/PFSpa/portfolioSpa/dist/portfolioSpa
+/PFSpa/portfolioSpa/.vscode
