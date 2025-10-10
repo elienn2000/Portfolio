@@ -18,13 +18,31 @@ namespace PortfolioApi.Repositories
             return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
         }
 
-        public async Task<User?> GetByLoginRequestAsync(LoginRequest request)
+        public async Task<User?> GetByLoginRequestAsync(AuthRequest request)
         {
             using var connection = OpenConnection();
 
-            var sql = "SELECT * FROM Users WHERE Email = @Email";
-            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = request.Email});
+            string sql;
+            object parameters;
+
+            if (!string.IsNullOrWhiteSpace(request.Email))
+            {
+                sql = "SELECT * FROM Users WHERE Email = @Email";
+                parameters = new { Email = request.Email };
+            }
+            else if (!string.IsNullOrWhiteSpace(request.UserName))
+            {
+                sql = "SELECT * FROM Users WHERE Username = @UserName";
+                parameters = new { UserName = request.UserName };
+            }
+            else
+            {
+                return null;
+            }
+
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, parameters);
         }
+
 
         public async Task<User?> GetByUsernameAsync(string username)
         {
@@ -46,7 +64,7 @@ namespace PortfolioApi.Repositories
         }
 
 
-        public async Task<long?> InsertUserAsync(LoginRequest request)
+        public async Task<long?> InsertUserAsync(AuthRequest request)
         {
             try
             {
@@ -74,6 +92,24 @@ namespace PortfolioApi.Repositories
             {
                 throw new Exception("Errore durante l'inserimento dell'utente", ex);
             }
+        }
+
+
+
+        public async Task<User?> CheckEmailExistAsync(AuthRequest request)
+        {
+            using var connection = OpenConnection();
+
+            var sql = "SELECT * FROM Users WHERE Email = @Email";
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = request.Email });
+        }
+
+        public async Task<User?> CheckUsernameExistAsync(AuthRequest request)
+        {
+            using var connection = OpenConnection();
+
+            var sql = "SELECT * FROM Users WHERE Username = @UserName";
+            return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserName = request.UserName });
         }
 
     }

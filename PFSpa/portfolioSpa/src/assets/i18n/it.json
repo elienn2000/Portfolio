@@ -2,15 +2,27 @@
   "APP": {
     "TITLE": "Benvenuto nel mio portfolio",
     "LANGUAGE": "Lingua",
-    "LOGIN": "Accedi"
+    "LOGIN": "Accedi",
+    "REGISTER": "Registrati"
   },
-  "LOGIN": {
+  "AUTH": {
     "TITLE": "Accedi al tuo account",
     "EMAIL": "Email",
+
+    "USERNAME": "Nome utente",
+    "USERNAME_PLACEHOLDER": "Inserisci il tuo nome utente",
+
     "EMAIL_PLACEHOLDER": "Inserisci la tua email",
+    "EMAIL_USERNAME_PLACEHOLDER": "Inserire mail o nome utente",
+
     "PASSWORD": "Password",
-    "PASSWORD_PLACEHOLDER": "Inserisci la tua password",
-    "BUTTON": "Accedi"
+    "PASSWORD_PLACEHOLDER": "Inserire password",
+    "PASSWORD_CONFIRM_PLACEHOLDER": "Conferma la tua password",
+    "PASSWORD_MISSMATCH": "Le password non corrispondono",
+
+    "LOGIN_BUTTON": "Accedi",
+    "REGISTER_BUTTON": "Registrati"
+    
   },
   "MENU": {
     "HOME": "Home",

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 
 interface LoginRequest {
   email: string;
+  username: string;
   password: string;
 }
 
@@ -20,6 +21,11 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+
+
+  register(credentials: LoginRequest): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Auth/register`, credentials);
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/Auth/login`, credentials);

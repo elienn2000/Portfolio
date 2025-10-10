@@ -26,7 +26,7 @@ namespace PortfolioApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertUser([FromBody] LoginRequest request)
+        public async Task<IActionResult> InsertUser([FromBody] AuthRequest request)
         {
             try
             {

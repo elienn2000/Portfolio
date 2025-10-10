@@ -2,60 +2,61 @@
   <mat-card class="login-card">
     <mat-card-header>
       <mat-card-title>
-        <span class="login-title"> WELCOME (TO TR) </span>
+        <span class="login-title"> {{ 'APP.TITLE' | translate }} </span>
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="h-full">
       
-       <mat-tab-group class="mt-5">
-    <!-- TAB LOGIN -->
-    <mat-tab label="LOGIN">
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex flex-col h-full mt-4">
-        <mat-form-field>
-          <mat-label>{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}</mat-label>
-          <input matInput formControlName="username" type="text">
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}</mat-label>
-          <input matInput formControlName="password" type="password">
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" type="submit">
-          {{ 'LOGIN.SUBMIT' | translate }}
-        </button>
-      </form>
-    </mat-tab>
-
-    <!-- TAB REGISTRAZIONE -->
-    <mat-tab label="REGISTRAZIONE">
-      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="form-container">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'REGISTER.USERNAME' | translate }}</mat-label>
-          <input matInput formControlName="username" type="text">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'REGISTER.EMAIL' | translate }}</mat-label>
-          <input matInput formControlName="email" type="email">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'REGISTER.PASSWORD' | translate }}</mat-label>
-          <input matInput formControlName="password" type="password">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'REGISTER.CONFIRM_PASSWORD' | translate }}</mat-label>
-          <input matInput formControlName="confirmPassword" type="password">
-        </mat-form-field>
-
-        <button mat-raised-button color="accent" type="submit">
-          {{ 'REGISTER.SUBMIT' | translate }}
-        </button>
-      </form>
-    </mat-tab>
-  </mat-tab-group>
+      <mat-tab-group dynamicHeight class="mt-5" animationDuration="500ms">
+        <!-- TAB LOGIN -->
+        <mat-tab [label]="'APP.LOGIN' | translate">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex flex-col h-full mt-4 p-3">
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.EMAIL_USERNAME_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="username" type="text">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.PASSWORD_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="password" type="password">
+            </mat-form-field>
+            
+            <button mat-raised-button color="primary" class="submit-btn"  type="submit">
+              {{ 'AUTH.LOGIN_BUTTON' | translate }}
+            </button>
+          </form>
+        </mat-tab>
+        
+        <!-- TAB REGISTRAZIONE -->
+        <mat-tab [label]="'APP.REGISTER' | translate">
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="flex flex-col h-full mt-4 p-3">
+            
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.EMAIL_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="email" type="text">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.USERNAME_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="username" type="text">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.PASSWORD_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="password" type="password">
+            </mat-form-field>
+            
+            <mat-form-field>
+              <mat-label>{{ 'AUTH.PASSWORD_CONFIRM_PLACEHOLDER' | translate }}</mat-label>
+              <input matInput formControlName="passwordConfirm" type="password">
+            </mat-form-field>
+            
+            <button mat-raised-button color="primary" class="submit-btn" type="submit">
+              {{ 'AUTH.REGISTER_BUTTON' | translate }}
+            </button>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card-content>
     <!-- <mat-card-actions>
       <button matButton>LIKE</button>

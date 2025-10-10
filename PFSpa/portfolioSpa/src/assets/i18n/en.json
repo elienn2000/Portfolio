@@ -2,20 +2,32 @@
   "APP": {
     "TITLE": "Welcome to my portfolio",
     "LANGUAGE": "Language",
-    "LOGIN": "Login"
+    "LOGIN": "Login",
+    "REGISTER": "Register"
   },
-  "LOGIN": {
-    "TITLE": "Login to your account",
+  "AUTH": {
+    "TITLE": "Sign in to your account",
+    
     "EMAIL": "Email",
+
+    "USERNAME": "Username",
+    "USERNAME_PLACEHOLDER": "Enter your username",
+
     "EMAIL_PLACEHOLDER": "Enter your email",
+    "EMAIL_USERNAME_PLACEHOLDER": "Enter your email or username",
+
     "PASSWORD": "Password",
     "PASSWORD_PLACEHOLDER": "Enter your password",
-    "BUTTON": "Login"
+    "PASSWORD_CONFIRM_PLACEHOLDER": "Confirm your password",
+    "PASSWORD_MISSMATCH": "Passwords do not match",
+
+    "LOGIN_BUTTON": "Login",
+    "REGISTER_BUTTON": "Register"
   },
   "MENU": {
     "HOME": "Home",
-    "ABOUT": "About me",
+    "ABOUT": "About",
     "PROJECTS": "Projects",
-    "CONTACT": "Contacts"
+    "CONTACT": "Contact"
   }
 }

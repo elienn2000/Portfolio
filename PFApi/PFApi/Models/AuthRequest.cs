@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace PortfolioApi.Models
 {
-    public class LoginRequest
+    public class AuthRequest
     {
         public string Email { get; set; } = "";
 

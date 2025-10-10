@@ -4,25 +4,25 @@
     background-color: var(--mat-sys-background);
     height: 100%;
     align-items: center;
-
-
+    
+    
     .login-card {
-
-        height: 60%;
-
+        
+        //height: 60%;
+        
         .login-title {
             font-size: 2em;
             font-weight: bold;
             margin-bottom: 20px;
             color: var(--mat-sys-on-surface);
         }
-
+        
         .mat-mdc-card-content {
             align-items: left;
             width: 80%;
         }
-
-
+        
+        
         flex-direction: column;
         text-align: center;
         width: 40%;
@@ -33,4 +33,11 @@
         border: 1px solid var(--mat-sys-outline);
         align-items: center;
     }
+    
+    .submit-btn {
+        background-color: var(--mat-sys-on-surface);
+        color: var(--mat-sys-surface);
+    }
+    
 }
+
