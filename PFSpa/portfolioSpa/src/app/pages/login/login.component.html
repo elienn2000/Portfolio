@@ -48,7 +48,7 @@
             
             <mat-form-field>
               <mat-label>{{ 'AUTH.PASSWORD_CONFIRM_PLACEHOLDER' | translate }}</mat-label>
-              <input matInput formControlName="passwordConfirm" type="password">
+              <input matInput formControlName="confirmPassword" type="password">
             </mat-form-field>
             
             <button mat-raised-button color="primary" class="submit-btn" type="submit">
@@ -58,43 +58,22 @@
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>
-    <!-- <mat-card-actions>
-      <button matButton>LIKE</button>
-      <button matButton>SHARE</button>
-    </mat-card-actions> -->
   </mat-card>
-  
-  
-  <!-- <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-    <div class="form-group">
-      <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
-      <input
-      type="email"
-      id="email"
-      [(ngModel)]="email"
-      name="email"
-      required
-      placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}"
-      />
-    </div>
-    
-    <div class="form-group">
-      <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
-      <input
-      type="password"
-      id="password"
-      [(ngModel)]="password"
-      name="password"
-      required
-      placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
-      />
-    </div>
-    
-    <button type="submit" [disabled]="!loginForm.form.valid">
-      {{ 'LOGIN.BUTTON' | translate }}
-    </button>
-  </form> -->
-  
-  
-  
 </div>
+
+
+<!-- EMAIL VERIFICATION DIALOG -->
+<!-- <mat-dialog-container *ngIf="handleVerificationMail">
+  <h2 mat-dialog-title>{{ 'AUTH.VERIFY_EMAIL_TITLE' | translate }}</h2>
+  <mat-dialog-content>
+    <p>{{ 'AUTH.VERIFY_EMAIL_INSTRUCTION' | translate }}</p>
+    <p *ngIf="newUser">{{ 'AUTH.VERIFY_EMAIL_SENT_TO' | translate:{email: newUser.email} }}</p>
+    <mat-form-field class="w-full">
+      <mat-label>{{ 'AUTH.VERIFICATION_TOKEN_PLACEHOLDER' | translate }}</mat-label>
+      <input matInput [(ngModel)]="verificationCode" name="verificationCode" type="number">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="handleVerificationMail = false">{{ 'APP.CANCEL' | translate }}</button>
+    <button mat-raised-button color="primary" (click)="onVerifyEmail()">{{ 'AUTH.VERIFY_EMAIL_BUTTON' | translate }}</button>
+  </mat-dialog-actions> -->

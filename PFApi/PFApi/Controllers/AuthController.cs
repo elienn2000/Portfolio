@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PortfolioApi.Models;
 using PortfolioApi.Repositories;
+using PortfolioApi.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -15,11 +16,12 @@ namespace PortfolioApi.Controllers
     {
         private readonly IConfiguration _config;
         private readonly UserRepository _userRepository;
-
-        public AuthController(IConfiguration config, UserRepository userRepository)
+        private readonly EmailVerificationService _verificationService;
+        public AuthController(IConfiguration config, UserRepository userRepository, EmailVerificationService verificationService)
         {
             _config = config;
             _userRepository = userRepository;
+            _verificationService = verificationService;
         }
 
         [HttpPost("login")]
@@ -127,14 +129,36 @@ namespace PortfolioApi.Controllers
             User newUser = new User
             {
                 Email = request.Email,
-                Username = request.UserName,
-                PasswordHash = "" // Placeholder, will be set after hashing
+                Username = request.UserName
             };
 
             // Hash the password
             var userId = await _userRepository.InsertUserAsync(request);
 
-            return Ok(new { userId = userId });
+            if (userId == null)
+            {
+                return StatusCode(500, new { message = "Error creating user" });
+            }
+
+            newUser.Id = (long)userId;
+
+            // Servizio per invio email di verifica
+
+            return Ok(newUser);
+        }
+
+
+        [HttpPost("sendVerificationEmail")]
+        public async Task<IActionResult> sendVerificationEmail([FromBody] User user)
+        {
+
+            if (string.IsNullOrWhiteSpace(user.Email))
+                return BadRequest("Email non valida.");
+
+            await _verificationService.SendVerificationEmailAsync(user);
+
+            return Ok();
+
         }
 
     }

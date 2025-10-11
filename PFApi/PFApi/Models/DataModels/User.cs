@@ -19,6 +19,12 @@ namespace PortfolioApi.Models
         // Refresh token
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        public int? Active { get; set; } = 0;
+
+        public string? VerificationCode { get; set; }
+
+        public DateTime? VerificationCodeExpiryTime { get; set; }
     }
 
 }

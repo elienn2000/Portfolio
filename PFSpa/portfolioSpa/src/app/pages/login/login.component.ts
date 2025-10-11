@@ -2,9 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-
-import { AuthService } from '../../services/auth.service';
-
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { User } from '../../models/user.model'
+import { AuthService } from '../../services/auth.service';
+
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -22,50 +21,53 @@ import { User } from '../../models/user.model'
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  // email = '';
-  // password = '';
-  
+
   loginForm: FormGroup;
   registerForm: FormGroup;
-  
+
+  newUser: User | null = null
+
+  handleVerificationMail = false;
+  verificationCode = '';
+
   constructor(private authService: AuthService, private fb: FormBuilder) {
-    
-    
+
+
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-    
+
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
-    
-    
+
+
   }
-  
+
   onLogin() {
     if (this.loginForm.valid) {
 
-    const loginValue = this.loginForm.get('username')?.value;
-    const password = this.loginForm.get('password')?.value;
-        
-    let email: string | null = null;
-    let username: string | null = null;
-        
-    if (loginValue?.includes('@')) {
-      email = loginValue;
-    } else {
-      username = loginValue;
-    }
-    
-    var payload = {
-      email: email || '',
-      username: username || '',
-      password: password
-    };
+      const loginValue = this.loginForm.get('username')?.value;
+      const password = this.loginForm.get('password')?.value;
+
+      let email: string | null = null;
+      let username: string | null = null;
+
+      if (loginValue?.includes('@')) {
+        email = loginValue;
+      } else {
+        username = loginValue;
+      }
+
+      var payload = {
+        email: email || '',
+        username: username || '',
+        password: password
+      };
 
 
       // Per ora solo console.log, più avanti gestirai i token
@@ -79,36 +81,79 @@ export class LoginComponent {
       });
     }
   }
-  
+
   onRegister() {
 
+    // Checking if the form is valid
+    if (this.registerForm.invalid)
+      return;
 
-      var email = this.registerForm.get('email')?.value;
-      var username = this.registerForm.get('username')?.value;
-      var password = this.registerForm.get('password')?.value;
-      // Per ora solo console.log, più avanti gestirai i token
-      this.authService.register({ email, username, password  }).subscribe({
-        next: (response) => {
-          console.log('Login successful:', response);
-        },
-        error: (error) => {
-          console.error('Login failed:', error);
-        }
-      });
+    // Extracting form values
+    var email = this.registerForm.get('email')?.value;
+    var username = this.registerForm.get('username')?.value;
+    var password = this.registerForm.get('password')?.value;
     
+    // Preparing payload
+    // The backend expects email, username, and password for the user registration
+    this.authService.register({ email, username, password }).subscribe({
+      next: (response) => {
+        // Storing the new user data for preparing the login
+        this.newUser = response;
+
+        // Preparing the email verification step
+        this.onHandleVerificationMail();
+
+        // Resetting the registration form
+       //this.registerForm.reset();
+        
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+      }
+    });
+
   }
-  
-  
+
+
   passwordMatchValidator(formGroup: FormGroup) {
-  const password = formGroup.get('password')?.value;
-  const confirmPassword = formGroup.get('confirmPassword')?.value;
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
 
-  if (password !== confirmPassword) {
-    formGroup.get('confirmPassword')?.setErrors({ mismatch: true });
-  } else {
-    formGroup.get('confirmPassword')?.setErrors(null);
+    if (password !== confirmPassword) {
+      formGroup.get('confirmPassword')?.setErrors({ mismatch: true });
+    } else {
+      formGroup.get('confirmPassword')?.setErrors(null);
+    }
+
+    return null;
   }
 
-  return null;
-}
+  // Call this method for showing the email verification message and sending the email
+  onHandleVerificationMail() {
+
+    if(!this.newUser || !this.newUser.email){
+      return;
+      // Safety check: if there's no new user or email, do nothing TODO: show error
+    }
+
+    this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
+      next: () => {
+        console.log('Verification email sent successfully');
+        this.handleVerificationMail = true;
+      },
+      error: (error) => {
+        console.error('Failed to send verification email:', error);
+        this.handleVerificationMail = false;
+      }
+    });
+
+  }
+
+
+  onVerifyEmail(){
+      if(!this.verificationCode){
+        return;
+        // Safety check: if there's no verification code, do nothing TODO: show error
+      }
+    }
 }

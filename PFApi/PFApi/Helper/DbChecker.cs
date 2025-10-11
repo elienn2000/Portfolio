@@ -49,7 +49,7 @@ namespace PortfolioApi
                 var builder = new SQLiteConnectionString(
                     databasePath: dbPath,
                     storeDateTimeAsTicks: true,
-                    key: "TestPasscode" 
+                    key: "TestPasscode"
                 );
 
                 // Ensure directory exists
@@ -76,7 +76,10 @@ namespace PortfolioApi
                             AccessToken TEXT,
                             AccessTokenExpiryTime DATETIME,
                             RefreshToken TEXT,
-                            RefreshTokenExpiryTime DATETIME
+                            RefreshTokenExpiryTime DATETIME,
+                            Active INTEGER NOT NULL DEFAULT 0,
+                            VerificationCode TEXT,
+                            VerificationCodeExpiryTime DATETIME
                         );
                     ";
 

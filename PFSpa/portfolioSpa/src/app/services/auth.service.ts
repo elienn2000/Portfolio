@@ -3,15 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-interface LoginRequest {
+import { User } from '../models/user.model';
+
+interface AuthRequest {
   email: string;
   username: string;
   password: string;
-}
-
-interface LoginResponse {
-  token: string;
-  expires: string;
 }
 
 @Injectable({
@@ -23,11 +20,19 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
 
-  register(credentials: LoginRequest): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Auth/register`, credentials);
+  register(credentials: AuthRequest): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/Auth/register`, credentials);
   }
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/Auth/login`, credentials);
+  login(credentials: AuthRequest): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/Auth/login`, credentials);
+  }
+
+  sendVerificationEmail(email: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/Auth/sendVerificationEmail`, { email });
+  }
+
+  verifyEmail(token: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/Auth/verifyMail`, { token });
   }
 }
