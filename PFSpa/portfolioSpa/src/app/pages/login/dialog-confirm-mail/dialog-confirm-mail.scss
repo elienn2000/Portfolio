@@ -1,0 +1,46 @@
+@use '@angular/material' as mat;
+
+.otp-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.otp-input {
+  width: 45px;
+  height: 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+
+  /* 👇 Nasconde la linea del cursore */
+  caret-color: transparent;
+
+  /* 👇 Impedisce la selezione blu del testo */
+  user-select: none;
+
+  /* 👇 Evita frecce su input numerici */
+  -moz-appearance: textfield;
+}
+
+.otp-input:focus {
+  border-color: var(--mat-sys-tertiary);
+  background-color: var(--mat-sys-tertiary-container);
+}
+
+/* 👇 Chrome, Edge, Safari: rimuove le freccine numeriche */
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 👇 Disabilita evidenziazione blu anche quando si seleziona accidentalmente */
+.otp-input::selection {
+  background: transparent;
+}

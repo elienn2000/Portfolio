@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{ 'AUTH.VERIFY_EMAIL_TITLE' | translate }}</h2>
+<mat-dialog-content>
+  <p>{{ 'AUTH.VERIFY_EMAIL_INSTRUCTION' | translate }}</p>
+  <!-- <p *ngIf="newUser">{{ 'AUTH.VERIFY_EMAIL_SENT_TO' | translate:{email: email} }}</p> -->
+  
+<div class="otp-container">
+  @for (digit of otpDigits(); track $index; let i = $index) {
+    <input
+      class="otp-input"
+      type="text"
+      maxlength="1"
+      [value]="digit"
+      (input)="onOtpInput($event, i)"
+      (keydown)="onOtpKeyDown($event, i)"
+      (paste)="onPaste($event)"
+      inputmode="numeric"
+      (focus)="onOtpFocus($event)"
+      pattern="[0-9]*"
+    />
+  }
+</div>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button>{{ 'APP.CANCEL' | translate }}</button>
+  <button mat-raised-button color="primary" (click)="confirmVerification()">{{ 'AUTH.VERIFY_EMAIL_BUTTON' | translate }}</button>
+</mat-dialog-actions>

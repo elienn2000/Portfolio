@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 import { User } from '../../models/user.model';
+
+import {MatDialog} from '@angular/material/dialog';
+import { EmailConfirmDialog } from './dialog-confirm-mail/dialog-confirm-mail';
 
 @Component({
   selector: 'app-login',
@@ -27,8 +30,9 @@ export class LoginComponent {
 
   newUser: User | null = null
 
-  handleVerificationMail = false;
   verificationCode = '';
+
+  readonly dialog = inject(MatDialog);
 
   constructor(private authService: AuthService, private fb: FormBuilder) {
 
@@ -45,9 +49,10 @@ export class LoginComponent {
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
 
+    this.openConfimMailDialog();
 
   }
-
+  
   onLogin() {
     if (this.loginForm.valid) {
 
@@ -92,7 +97,7 @@ export class LoginComponent {
     var email = this.registerForm.get('email')?.value;
     var username = this.registerForm.get('username')?.value;
     var password = this.registerForm.get('password')?.value;
-    
+
     // Preparing payload
     // The backend expects email, username, and password for the user registration
     this.authService.register({ email, username, password }).subscribe({
@@ -104,8 +109,8 @@ export class LoginComponent {
         this.onHandleVerificationMail();
 
         // Resetting the registration form
-       //this.registerForm.reset();
-        
+        //this.registerForm.reset();
+
       },
       error: (error) => {
         console.error('Login failed:', error);
@@ -131,7 +136,7 @@ export class LoginComponent {
   // Call this method for showing the email verification message and sending the email
   onHandleVerificationMail() {
 
-    if(!this.newUser || !this.newUser.email){
+    if (!this.newUser || !this.newUser.email) {
       return;
       // Safety check: if there's no new user or email, do nothing TODO: show error
     }
@@ -139,21 +144,37 @@ export class LoginComponent {
     this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
       next: () => {
         console.log('Verification email sent successfully');
-        this.handleVerificationMail = true;
+        this.openConfimMailDialog();
       },
       error: (error) => {
         console.error('Failed to send verification email:', error);
-        this.handleVerificationMail = false;
       }
     });
 
   }
 
 
-  onVerifyEmail(){
-      if(!this.verificationCode){
-        return;
-        // Safety check: if there's no verification code, do nothing TODO: show error
-      }
+  openConfimMailDialog(): void {
+    // Controlla se EmailConfirmDialog è già aperto
+    const isOpen = this.dialog.openDialogs.some(
+      dialog => dialog.componentInstance instanceof EmailConfirmDialog
+    );
+    
+    if (isOpen) {
+      console.log('EmailConfirmDialog already open');
+      return;
     }
+
+    const dialogRef = this.dialog.open(EmailConfirmDialog, {
+      // data: {name: this.name(), animal: this.animal()},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result !== undefined) {
+        //this.animal.set(result);
+      }
+    });
+  }
 }
+
