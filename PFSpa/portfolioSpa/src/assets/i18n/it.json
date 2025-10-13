@@ -3,7 +3,9 @@
     "TITLE": "Benvenuto nel mio portfolio",
     "LANGUAGE": "Lingua",
     "LOGIN": "Accedi",
-    "REGISTER": "Registrati"
+    "REGISTER": "Registrati",
+    "CONFIRM": "Conferma",
+    "CANCEL": "Annulla"
   },
   "AUTH": {
     "TITLE": "Accedi al tuo account",
@@ -21,8 +23,12 @@
     "PASSWORD_MISSMATCH": "Le password non corrispondono",
 
     "LOGIN_BUTTON": "Accedi",
-    "REGISTER_BUTTON": "Registrati"
-    
+    "REGISTER_BUTTON": "Registrati",
+
+    "VERIFY_EMAIL_TITLE": "Verifica la tua email",
+    "VERIFY_EMAIL_INSTRUCTION": "Ti abbiamo inviato un'email di verifica. Controlla la tua casella di posta ed inserisci il codice qui sotto per verificare il tuo account.",
+    "RESEND_VERIFY_EMAIL": "Reinvia email di verifica",
+    "VERIFY_EMAIL_BUTTON": "Verifica email"
   },
   "MENU": {
     "HOME": "Home",

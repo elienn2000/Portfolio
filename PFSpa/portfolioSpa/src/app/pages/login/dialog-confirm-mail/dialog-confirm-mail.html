@@ -1,7 +1,6 @@
 <h2 mat-dialog-title>{{ 'AUTH.VERIFY_EMAIL_TITLE' | translate }}</h2>
 <mat-dialog-content>
   <p>{{ 'AUTH.VERIFY_EMAIL_INSTRUCTION' | translate }}</p>
-  <!-- <p *ngIf="newUser">{{ 'AUTH.VERIFY_EMAIL_SENT_TO' | translate:{email: email} }}</p> -->
   
 <div class="otp-container">
   @for (digit of otpDigits(); track $index; let i = $index) {
@@ -20,9 +19,8 @@
   }
 </div>
 
-
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button>{{ 'APP.CANCEL' | translate }}</button>
+  <button mat-button (click)="dialogRef.close()">{{ 'APP.CANCEL' | translate }}</button>
   <button mat-raised-button color="primary" (click)="confirmVerification()">{{ 'AUTH.VERIFY_EMAIL_BUTTON' | translate }}</button>
 </mat-dialog-actions>

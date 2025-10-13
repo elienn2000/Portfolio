@@ -24,12 +24,12 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/Auth/register`, credentials);
   }
 
-  login(credentials: AuthRequest): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/Auth/login`, credentials);
+  login(credentials: AuthRequest): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Auth/login`, credentials);
   }
 
-  sendVerificationEmail(email: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/Auth/sendVerificationEmail`, { email });
+  sendVerificationEmail(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Auth/sendVerificationEmail`, { email });
   }
 
   verifyEmail(token: string): Observable<void> {

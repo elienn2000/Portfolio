@@ -16,6 +16,8 @@ import { User } from '../../models/user.model';
 import {MatDialog} from '@angular/material/dialog';
 import { EmailConfirmDialog } from './dialog-confirm-mail/dialog-confirm-mail';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -34,7 +36,7 @@ export class LoginComponent {
 
   readonly dialog = inject(MatDialog);
 
-  constructor(private authService: AuthService, private fb: FormBuilder) {
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
 
 
     this.loginForm = this.fb.group({
@@ -48,8 +50,6 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
-
-    this.openConfimMailDialog();
 
   }
   
@@ -78,7 +78,20 @@ export class LoginComponent {
       // Per ora solo console.log, più avanti gestirai i token
       this.authService.login(payload).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
+          switch (response.status) {
+        case 'success':
+          // Gestione refresh token TODO
+          this.router.navigate(['/home']);
+          break;
+
+        case 'email_verification_required':
+          this.openConfirmMailDialog(response.email, response.expires); 
+          break;
+
+        default:
+          // Caso generico
+          //this.messageService.add({ severity: 'error', summary: 'Errore', detail: 'Risposta inattesa dal server.' });
+      }
         },
         error: (error) => {
           console.error('Login failed:', error);
@@ -142,9 +155,9 @@ export class LoginComponent {
     }
 
     this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
-      next: () => {
+      next: (response) => {
         console.log('Verification email sent successfully');
-        this.openConfimMailDialog();
+        this.openConfirmMailDialog(response.email, response.expires);
       },
       error: (error) => {
         console.error('Failed to send verification email:', error);
@@ -154,7 +167,7 @@ export class LoginComponent {
   }
 
 
-  openConfimMailDialog(): void {
+  openConfirmMailDialog(email: string, expTime: Date): void {
     // Controlla se EmailConfirmDialog è già aperto
     const isOpen = this.dialog.openDialogs.some(
       dialog => dialog.componentInstance instanceof EmailConfirmDialog
@@ -165,15 +178,20 @@ export class LoginComponent {
       return;
     }
 
+    var verificationCode = '';
+
     const dialogRef = this.dialog.open(EmailConfirmDialog, {
-      // data: {name: this.name(), animal: this.animal()},
+       data: {email: email, expTime: expTime},
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+
       if (result !== undefined) {
-        //this.animal.set(result);
+        verificationCode = result;
       }
+
+      // controllo verificationCode TODO
+
     });
   }
 }

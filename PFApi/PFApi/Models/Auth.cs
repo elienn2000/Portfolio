@@ -10,4 +10,11 @@ namespace PortfolioApi.Models
         public string Password { get; set; } = "";
 
     }
+
+    public class MailVerifyRequest
+    {
+        public string Email { get; set; } = "";
+
+        public DateTime ExpiryTime { get; set; }
+    }
 }

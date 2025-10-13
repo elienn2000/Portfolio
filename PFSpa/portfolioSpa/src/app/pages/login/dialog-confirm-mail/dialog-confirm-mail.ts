@@ -5,12 +5,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import {
+    MAT_DIALOG_DATA,
     MatDialogActions,
     MatDialogContent,
     MatDialogRef,
     MatDialogTitle
 } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+
+export interface DialogData {
+  email: string;
+  expTime: Date;
+}
+
 
 @Component({
     selector: 'dialog-confirm-mail',
@@ -32,43 +39,45 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EmailConfirmDialog implements AfterViewInit {
     readonly dialogRef = inject(MatDialogRef<EmailConfirmDialog>);
 
-    email: string = '';
-    expTime: Date | null = null;
+    readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+    readonly expTime = this.data.expTime;
+    readonly email = this.data.email;
 
-    // Signal reattivo per i 6 campi OTP
+
+    // Reactive signal for OTP digits
     readonly otpDigits = signal<string[]>(['', '', '', '', '', '']);
 
     @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
     ngAfterViewInit(): void {
-        // Focus automatico sul primo campo
-        setTimeout(() => this.otpInputs.first?.nativeElement.focus(), 0);
+        // Focus on the first input when the view is initialized
+        this.otpInputs.first?.nativeElement.focus();
     }
 
-    /** Quando l’utente digita */
+    
     onOtpInput(event: Event, index: number): void {
         const input = event.target as HTMLInputElement;
         let value = input.value.trim();
 
-        // Accetta solo numeri singoli
+        // Accept only single digits
         if (!/^\d$/.test(value)) {
             input.value = '';
             return;
         }
 
-        // Aggiorna solo la cella modificata
+        // Update only the modified cell
         this.otpDigits.update(digits => {
             const copy = [...digits];
             copy[index] = value;
             return copy;
         });
 
-        // Passa al campo successivo
+        // Pass to the next input
         const next = input.parentElement?.querySelectorAll('input')[index + 1] as HTMLInputElement;
         next?.focus();
     }
 
-    /** Quando l’utente preme tasti speciali */
+
     onOtpKeyDown(event: KeyboardEvent, index: number): void {
         const input = event.target as HTMLInputElement;
 
@@ -76,39 +85,35 @@ export class EmailConfirmDialog implements AfterViewInit {
         if (event.key === 'Backspace') {
             event.preventDefault();
 
+            // Clear current cell
             this.otpDigits.update(digits => {
                 const copy = [...digits];
                 copy[index] = '';
                 return copy;
             });
 
+            // Move to previous input
             const prev = input.parentElement?.querySelectorAll('input')[index - 1] as HTMLInputElement;
             prev?.focus();
             return;
         }
-
-        // Frecce sinistra/destra
-        if (event.key === 'ArrowLeft') {
-            const prev = input.parentElement?.querySelectorAll('input')[index - 1] as HTMLInputElement;
-            prev?.focus();
-        } else if (event.key === 'ArrowRight') {
-            const next = input.parentElement?.querySelectorAll('input')[index + 1] as HTMLInputElement;
-            next?.focus();
-        }
     }
 
-    /** Quando l’utente incolla un codice */
+    
     onPaste(event: ClipboardEvent): void {
         event.preventDefault();
 
+        // Get pasted data
         const input = event.target as HTMLInputElement;
-
         const data = event.clipboardData?.getData('text') ?? '';
+
+        // Extract digits and fill the inputs
         const digits = data.replace(/\D/g, '').slice(0, 6).split('');
 
+        // Fill the inputs with the extracted digits
         this.otpDigits.set([...digits, ...Array(6 - digits.length).fill('')]);
 
-
+        // Focus the next empty input or the last one
         const lastFilledIndex = digits.length > 0 ? digits.length - 1 : 0;
         const focusIndex =
             digits.length < this.otpDigits().length
@@ -120,18 +125,24 @@ export class EmailConfirmDialog implements AfterViewInit {
     }
 
     onOtpFocus(event: FocusEvent): void {
+        // Select all text on focus
         event.preventDefault();
 
         const input = event.target as HTMLInputElement;
-        // Se c’è già un valore, lo seleziona tutto
+
         input.select();
     }
 
 
-    /** Conferma OTP */
+    
     confirmVerification(): void {
-        const code = this.otpDigits().join('');
-        console.log('Codice OTP:', code);
-        this.dialogRef.close(code);
+
+        if(this.otpDigits().some(digit => digit === '')) {
+            // If any digit is missing, do nothing (or show an error)
+            return;
+        }
+
+        // Close the dialog and return the code
+        this.dialogRef.close(this.otpDigits().join(''));
     }
 }

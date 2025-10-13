@@ -39,6 +39,20 @@ namespace PortfolioApi.Controllers
                     return Unauthorized(new { message = "Invalid credentials" });
                 }
 
+                // Checking if user is active
+                if (user.Active != 1)
+                {
+                    var result = await _verificationService.SendVerificationEmailAsync(user);
+
+                    return Ok(new
+                    {
+                        status = "email_verification_required",
+                        message = "Verification email sent",
+                        email = result.Email,
+                        expires = result.ExpiryTime
+                    });
+                }
+
                 // Get JWT settings from configuration
                 var jwtSection = _config.GetSection("JWTUser");
                 var secret = jwtSection["Secret"];

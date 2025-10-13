@@ -1,4 +1,5 @@
-﻿using PortfolioApi.Models;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using PortfolioApi.Models;
 using PortfolioApi.Repositories;
 using System.Security.Cryptography;
 
@@ -15,12 +16,14 @@ namespace PortfolioApi.Services
             _emailService = emailService;
         }
 
-        public async Task SendVerificationEmailAsync(User user)
+        public async Task<MailVerifyRequest> SendVerificationEmailAsync(User user)
         {
-            var code = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
-            
+            try
+            {
+                var code = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
 
-            string body = $@"
+
+                string body = $@"
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;'>
                     <div style='background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
                         <h2 style='color: #333333; margin-top: 0; text-align: center;'>Verification Code</h2>
@@ -40,13 +43,27 @@ namespace PortfolioApi.Services
                 </div>
             ";
 
-            await _emailService.SendEmailAsync(user.Email, "Verification Code", body);
+                await _emailService.SendEmailAsync(user.Email, "Verification Code", body);
 
-            var expiry = DateTime.UtcNow.AddMinutes(5);
+                var expiry = DateTime.Now.AddMinutes(5);
 
-            user.VerificationCode = code;
-            user.VerificationCodeExpiryTime = expiry;
-            await _userRepository.UpdateAsync(user);
+                user.VerificationCode = code;
+                user.VerificationCodeExpiryTime = expiry;
+                await _userRepository.UpdateAsync(user);
+
+                var result = new MailVerifyRequest
+                {
+                    Email = user.Email,
+                    ExpiryTime = expiry
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending verification email: {ex.Message}");
+                throw new InvalidOperationException("ERR_EMAIL_SENDING_FAILED");
+            }
         }
     }
 }
