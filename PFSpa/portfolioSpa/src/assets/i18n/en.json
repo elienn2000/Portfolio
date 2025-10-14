@@ -27,7 +27,7 @@
     "REGISTER_BUTTON": "Register",
 
     "VERIFY_EMAIL_TITLE": "Verify your email",
-    "VERIFY_EMAIL_INSTRUCTION": "We have sent you a verification email. Please check your inbox and enter the code below to verify your account.",
+    "VERIFY_EMAIL_INSTRUCTION": "We have sent a verification email to <span class='highlight-text'>{{email}}</span>. Please check your inbox and enter the verification code below to activate your account.<br><br>The code will be valid for another {{expiry_minutes}}:{{expiry_seconds}}.",
     "RESEND_VERIFY_EMAIL": "Resend verification email",
     "VERIFY_EMAIL_BUTTON": "Verify Email"
 

@@ -157,7 +157,7 @@ export class LoginComponent {
     this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
       next: (response) => {
         console.log('Verification email sent successfully');
-        this.openConfirmMailDialog(response.email, response.expires);
+        this.openConfirmMailDialog(response.email, response.expiryTime);
       },
       error: (error) => {
         console.error('Failed to send verification email:', error);

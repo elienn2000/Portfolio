@@ -18,3 +18,6 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 // Toolbar style
+.highlight-text {
+  color: var(--mat-sys-tertiary);
+}

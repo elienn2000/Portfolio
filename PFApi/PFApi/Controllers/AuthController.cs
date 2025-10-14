@@ -169,9 +169,9 @@ namespace PortfolioApi.Controllers
             if (string.IsNullOrWhiteSpace(user.Email))
                 return BadRequest("Email non valida.");
 
-            await _verificationService.SendVerificationEmailAsync(user);
+            var result = await _verificationService.SendVerificationEmailAsync(user);
 
-            return Ok();
+            return Ok(result);
 
         }
 

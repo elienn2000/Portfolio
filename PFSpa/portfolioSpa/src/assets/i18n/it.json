@@ -26,7 +26,7 @@
     "REGISTER_BUTTON": "Registrati",
 
     "VERIFY_EMAIL_TITLE": "Verifica la tua email",
-    "VERIFY_EMAIL_INSTRUCTION": "Ti abbiamo inviato un'email di verifica. Controlla la tua casella di posta ed inserisci il codice qui sotto per verificare il tuo account.",
+    "VERIFY_EMAIL_INSTRUCTION": "Ti abbiamo inviato un'email di verifica all'indirizzo <span class='highlight-text'>{{email}}</span>. Controlla la tua casella di posta e inserisci qui sotto il codice di verifica per attivare il tuo account.<br><br>Il codice resterà valido per ancora {{expiry_minutes}}:{{expiry_seconds}}.",
     "RESEND_VERIFY_EMAIL": "Reinvia email di verifica",
     "VERIFY_EMAIL_BUTTON": "Verifica email"
   },

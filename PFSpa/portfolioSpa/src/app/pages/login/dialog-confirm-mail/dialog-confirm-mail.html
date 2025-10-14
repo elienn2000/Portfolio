@@ -1,6 +1,13 @@
 <h2 mat-dialog-title>{{ 'AUTH.VERIFY_EMAIL_TITLE' | translate }}</h2>
 <mat-dialog-content>
-  <p>{{ 'AUTH.VERIFY_EMAIL_INSTRUCTION' | translate }}</p>
+  <p
+  [innerHTML]="'AUTH.VERIFY_EMAIL_INSTRUCTION' | translate : {
+    email: email,
+    expiry_minutes: expiryMinutes,
+    expiry_seconds: expirySeconds
+  }">
+</p>
+
   
 <div class="otp-container">
   @for (digit of otpDigits(); track $index; let i = $index) {
