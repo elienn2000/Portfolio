@@ -29,5 +29,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="dialogRef.close()">{{ 'APP.CANCEL' | translate }}</button>
-  <button mat-raised-button color="primary" (click)="confirmVerification()">{{ 'AUTH.VERIFY_EMAIL_BUTTON' | translate }}</button>
+  <button [disabled]="disabledConfirm()" mat-raised-button color="primary" (click)="confirmVerification()">{{ 'AUTH.VERIFY_EMAIL_BUTTON' | translate }}</button>
 </mat-dialog-actions>

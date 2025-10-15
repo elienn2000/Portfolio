@@ -26,72 +26,81 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-
+  
   loginForm: FormGroup;
   registerForm: FormGroup;
+  
+  newUser: User | null = null;
+  loggedInUser: User | null = null;
 
-  newUser: User | null = null
-
+  
   verificationCode = '';
-
+  
   readonly dialog = inject(MatDialog);
-
+  
   constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
-
-
+    
+    
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-
+    
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
-
+    
   }
   
   onLogin() {
     if (this.loginForm.valid) {
-
+      
       const loginValue = this.loginForm.get('username')?.value;
       const password = this.loginForm.get('password')?.value;
-
+      
       let email: string | null = null;
       let username: string | null = null;
-
+      
       if (loginValue?.includes('@')) {
         email = loginValue;
       } else {
         username = loginValue;
       }
-
+      
       var payload = {
         email: email || '',
         username: username || '',
         password: password
       };
-
-
+      
+      
       // Per ora solo console.log, più avanti gestirai i token
       this.authService.login(payload).subscribe({
         next: (response) => {
           switch (response.status) {
-        case 'success':
-          // Gestione refresh token TODO
-          this.router.navigate(['/home']);
-          break;
+            case 'success':
+            // Gestione refresh token TODO
+            this.router.navigate(['/home']);
+            break;
+            
+            case 'email_verification_required':
+            this.loggedInUser = new User();
 
-        case 'email_verification_required':
-          this.openConfirmMailDialog(response.email, response.expires); 
-          break;
+            // Store user data for potential auto-login after verification
+            this.loggedInUser.email = payload.email;
+            this.loggedInUser.username = payload.username;
+            this.loggedInUser.password = payload.password;
 
-        default:
-          // Caso generico
-          //this.messageService.add({ severity: 'error', summary: 'Errore', detail: 'Risposta inattesa dal server.' });
-      }
+            this.openConfirmMailDialog(response.email, response.expires); 
+            break;
+            
+            default:
+            // Caso generico
+            //this.messageService.add({ severity: 'error', summary: 'Errore', detail: 'Risposta inattesa dal server.' });
+          }
         },
         error: (error) => {
           console.error('Login failed:', error);
@@ -99,61 +108,61 @@ export class LoginComponent {
       });
     }
   }
-
+  
   onRegister() {
-
+    
     // Checking if the form is valid
     if (this.registerForm.invalid)
       return;
-
+    
     // Extracting form values
     var email = this.registerForm.get('email')?.value;
     var username = this.registerForm.get('username')?.value;
     var password = this.registerForm.get('password')?.value;
-
+    
     // Preparing payload
     // The backend expects email, username, and password for the user registration
     this.authService.register({ email, username, password }).subscribe({
       next: (response) => {
         // Storing the new user data for preparing the login
         this.newUser = response;
-
+        
         // Preparing the email verification step
         this.onHandleVerificationMail();
-
+        
         // Resetting the registration form
         //this.registerForm.reset();
-
+        
       },
       error: (error) => {
         console.error('Login failed:', error);
       }
     });
-
+    
   }
-
-
+  
+  
   passwordMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirmPassword')?.value;
-
+    
     if (password !== confirmPassword) {
       formGroup.get('confirmPassword')?.setErrors({ mismatch: true });
     } else {
       formGroup.get('confirmPassword')?.setErrors(null);
     }
-
+    
     return null;
   }
-
+  
   // Call this method for showing the email verification message and sending the email
   onHandleVerificationMail() {
-
+    
     if (!this.newUser || !this.newUser.email) {
       return;
       // Safety check: if there's no new user or email, do nothing TODO: show error
     }
-
+    
     this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
       next: (response) => {
         console.log('Verification email sent successfully');
@@ -163,10 +172,10 @@ export class LoginComponent {
         console.error('Failed to send verification email:', error);
       }
     });
-
+    
   }
-
-
+  
+  
   openConfirmMailDialog(email: string, expTime: Date): void {
     // Controlla se EmailConfirmDialog è già aperto
     const isOpen = this.dialog.openDialogs.some(
@@ -177,21 +186,44 @@ export class LoginComponent {
       console.log('EmailConfirmDialog already open');
       return;
     }
-
+    
     var verificationCode = '';
-
+    
     const dialogRef = this.dialog.open(EmailConfirmDialog, {
-       data: {email: email, expTime: expTime},
+      data: {email: email, expTime: expTime},
     });
-
+    
     dialogRef.afterClosed().subscribe(result => {
-
+      
       if (result !== undefined) {
         verificationCode = result;
       }
-
+      
       // controllo verificationCode TODO
+      
+      
+    });
+    
+    dialogRef.componentInstance.verifyCode.subscribe(code => {
+      this.authService.verifyActivationCode(email, code).subscribe({
+        next: () => {
+          dialogRef.close();
+          // After successful verification, log in the user automatically
+          if (this.loggedInUser && (this.loggedInUser.email || this.loggedInUser.username)
+          && this.loggedInUser.password
+          ) {
+            this.loginForm.setValue({
+              username: this.loggedInUser.username || this.loggedInUser.email || '',
+              password: this.loggedInUser.password || ''
+            });
+            this.onLogin();
+          }
 
+        },
+        error: (error) => {
+          console.error('Errore nella verifica del codice di attivazione:', error);
+        }
+      });
     });
   }
 }

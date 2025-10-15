@@ -112,5 +112,27 @@ namespace PortfolioApi.Repositories
             return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserName = request.UserName });
         }
 
+        public async Task<VerificationStatus> CheckUserActiviationCodeAsync(EmailVerificationRequest request)
+        {
+            var user = await GetByEmailAsync(request.Email);
+
+            if(user == null)
+                return VerificationStatus.UserNotFound;
+
+            if (user.VerificationCode != request.VerificationCode)
+                return VerificationStatus.CodeInvalid;
+
+            if (user.VerificationCodeExpiryTime < request.ExpiryTime)
+                return VerificationStatus.CodeExpired;
+
+            // Update on schema
+            user.VerificationCode = null;
+            user.VerificationCodeExpiryTime = null;
+            user.Active = 1;
+            await UpdateAsync(user);
+
+            return VerificationStatus.Success;
+        }
+
     }
 }

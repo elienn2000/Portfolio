@@ -1,9 +1,10 @@
-import { Component, ElementRef, QueryList, ViewChildren, inject, signal, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, inject, signal, AfterViewInit, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+
 import {
     MAT_DIALOG_DATA,
     MatDialogActions,
@@ -52,7 +53,8 @@ export class EmailConfirmDialog implements AfterViewInit {
     
     @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
     
-    
+    @Output() verifyCode = new EventEmitter<string>();
+
     constructor() {
         
         this.convertExpiryTime();
@@ -159,9 +161,12 @@ export class EmailConfirmDialog implements AfterViewInit {
             // If any digit is missing, do nothing (or show an error)
             return;
         }
+
+        // emit signal with the complete OTP code
+        this.verifyCode.emit(this.otpDigits().join(''));
         
         // Close the dialog and return the code
-        this.dialogRef.close(this.otpDigits().join(''));
+        //this.dialogRef.close(this.otpDigits().join(''));
     }
     
     convertExpiryTime(): void {
@@ -177,6 +182,10 @@ export class EmailConfirmDialog implements AfterViewInit {
         // Conversione in stringa con zero iniziale
         this.expiryMinutes = minutes.toString().padStart(2, '0');
         this.expirySeconds = seconds.toString().padStart(2, '0');
+    }
+
+    disabledConfirm(): boolean {
+        return this.otpDigits().some(digit => digit === '');
     }
     
 }

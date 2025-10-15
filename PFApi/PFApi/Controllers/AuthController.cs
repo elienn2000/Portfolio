@@ -101,6 +101,7 @@ namespace PortfolioApi.Controllers
                 // Returning user data with tokens
                 return Ok(new
                 {
+                    status = "success",
                     userId = user.Id,
                     email = user.Email,
                     username = user.Username,
@@ -175,5 +176,35 @@ namespace PortfolioApi.Controllers
 
         }
 
+        [HttpPost("verifyActivationCode")]
+
+        public async Task<IActionResult> verifyActivationCode([FromBody] EmailVerificationRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.VerificationCode))
+                return BadRequest("Email or ActivationCode not valid.");
+
+            var result = await _userRepository.CheckUserActiviationCodeAsync(request);
+
+
+            switch (result)
+            {
+                case
+                    VerificationStatus.UserNotFound:
+                    return NotFound(new { message = "User not found" });
+                case VerificationStatus.CodeExpired:
+                    return BadRequest(new { message = "The activation code is expired" });
+                case VerificationStatus.CodeInvalid:
+                    return BadRequest(new { message = "The activation code is not correct" });
+                case VerificationStatus.Success:
+                    break;
+                default:
+                    return StatusCode(500, new { message = "Iternal error" });
+            }
+
+
+            // login
+            return Ok(new { message = "User verified successfully" });
+
+        }
     }
 }
