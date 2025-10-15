@@ -9,21 +9,23 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 
+import { DatePipe } from '@angular/common';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withEnabledBlockingInitialNavigation()), // 🔹 utile anche con prerender
     provideHttpClient(),
+    DatePipe,
 
-    // Configurazione loader: dice dove sono i file JSON
     {
       provide: TRANSLATE_HTTP_LOADER_CONFIG,
       useValue: {
-        prefix: 'assets/i18n/', // 👈 senza ./ davanti
+        prefix: 'assets/i18n/',
         suffix: '.json'
       }
     },
 
-    // Provider di ngx-translate
+    // Provider ngx-translate
     ...TranslateModule.forRoot({
       defaultLanguage: 'it',
       loader: {
