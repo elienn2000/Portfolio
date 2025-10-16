@@ -47,9 +47,18 @@ namespace PortfolioApi.Services
 
                 var expiry = DateTime.Now.AddMinutes(5);
 
-                user.VerificationCode = code;
-                user.VerificationCodeExpiryTime = expiry;
-                await _userRepository.UpdateAsync(user);
+
+                var extUser = await _userRepository.GetAsync<User>(user.Id);
+
+                if(extUser is null)
+                {
+                    throw new InvalidOperationException("ERR_USER_NOT_FOUND");
+                }
+
+                extUser.VerificationCode = code;
+                extUser.VerificationCodeExpiryTime = expiry;
+
+                var save = await _userRepository.UpdateAsync(extUser);
 
                 var result = new MailVerifyRequest
                 {

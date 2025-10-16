@@ -30,8 +30,8 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/Auth/login`, credentials);
   }
 
-  sendVerificationEmail(email: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Auth/sendVerificationEmail`, { email });
+  sendVerificationEmail(user: User): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Auth/sendVerificationEmail`, user);
   }
 
   verifyActivationCode(email: string, code: string, ): Observable<void> {

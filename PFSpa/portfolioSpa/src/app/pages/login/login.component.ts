@@ -18,6 +18,8 @@ import { EmailConfirmDialog } from './dialog-confirm-mail/dialog-confirm-mail';
 
 import { Router } from '@angular/router';
 
+
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -82,8 +84,11 @@ export class LoginComponent {
         next: (response) => {
           switch (response.status) {
             case 'success':
-            // Gestione refresh token TODO
+
+            // Salvataggio dati utente in localStorage
+            localStorage.setItem('user', JSON.stringify(response));
             this.router.navigate(['/home']);
+            
             break;
             
             case 'email_verification_required':
@@ -119,6 +124,11 @@ export class LoginComponent {
     var email = this.registerForm.get('email')?.value;
     var username = this.registerForm.get('username')?.value;
     var password = this.registerForm.get('password')?.value;
+
+    this.loggedInUser = new User();
+    this.loggedInUser.email = email;
+    this.loggedInUser.username = username;
+    this.loggedInUser.password = password;
     
     // Preparing payload
     // The backend expects email, username, and password for the user registration
@@ -163,7 +173,7 @@ export class LoginComponent {
       // Safety check: if there's no new user or email, do nothing TODO: show error
     }
     
-    this.authService.sendVerificationEmail(this.newUser?.email).subscribe({
+    this.authService.sendVerificationEmail(this.newUser).subscribe({
       next: (response) => {
         console.log('Verification email sent successfully');
         this.openConfirmMailDialog(response.email, response.expiryTime);
